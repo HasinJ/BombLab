@@ -484,7 +484,7 @@ Disassembly of section .text:
   401173:	be 6d 2a 40 00       	mov    $0x402a6d,%esi
   401178:	e8 13 fb ff ff       	callq  400c90 <__isoc99_sscanf@plt>
   40117d:	83 f8 02             	cmp    $0x2,%eax
-  401180:	75 06                	jne    401188 <phase_5+0x31>
+  401180:	75 06                	jne    401188 <phase_5+0x31> 
   401182:	83 3c 24 0e          	cmpl   $0xe,(%rsp)
   401186:	76 05                	jbe    40118d <phase_5+0x36>
   401188:	e8 86 06 00 00       	callq  401813 <explode_bomb>
@@ -562,60 +562,76 @@ Disassembly of section .text:
   401266:	49 89 e4             	mov    %rsp,%r12
   401269:	49 89 e5             	mov    %rsp,%r13
   40126c:	41 be 00 00 00 00    	mov    $0x0,%r14d
+
+
   401272:	4c 89 ed             	mov    %r13,%rbp
   401275:	41 8b 45 00          	mov    0x0(%r13),%eax
   401279:	83 e8 01             	sub    $0x1,%eax
   40127c:	83 f8 05             	cmp    $0x5,%eax
   40127f:	76 05                	jbe    401286 <phase_7+0x44>
   401281:	e8 8d 05 00 00       	callq  401813 <explode_bomb>
-  401286:	41 83 c6 01          	add    $0x1,%r14d
-  40128a:	41 83 fe 06          	cmp    $0x6,%r14d
-  40128e:	74 21                	je     4012b1 <phase_7+0x6f>
-  401290:	44 89 f3             	mov    %r14d,%ebx
+
+  401286:	41 83 c6 01          	add    $0x1,%r14d //i++
+  40128a:	41 83 fe 06          	cmp    $0x6,%r14d //i==6
+  40128e:	74 21                	je     4012b1 <phase_7+0x6f> //jumps if check == //our exit
+
+  401290:	44 89 f3             	mov    %r14d,%ebx //inner loop increment continues off
   401293:	48 63 c3             	movslq %ebx,%rax
-  401296:	8b 04 84             	mov    (%rsp,%rax,4),%eax
-  401299:	39 45 00             	cmp    %eax,0x0(%rbp)
+  401296:	8b 04 84             	mov    (%rsp,%rax,4),%eax //$rsp + 
+  401299:	39 45 00             	cmp    %eax,0x0(%rbp) //checks if its == 1st input?
   40129c:	75 05                	jne    4012a3 <phase_7+0x61>
   40129e:	e8 70 05 00 00       	callq  401813 <explode_bomb>
   4012a3:	83 c3 01             	add    $0x1,%ebx
   4012a6:	83 fb 05             	cmp    $0x5,%ebx
-  4012a9:	7e e8                	jle    401293 <phase_7+0x51>
+  4012a9:	7e e8                	jle    401293 <phase_7+0x51> //if j<=5 continue
   4012ab:	49 83 c5 04          	add    $0x4,%r13
-  4012af:	eb c1                	jmp    401272 <phase_7+0x30>
-  4012b1:	48 8d 4c 24 18       	lea    0x18(%rsp),%rcx
+  4012af:	eb c1                	jmp    401272 <phase_7+0x30> //if j==6
+
+
+  4012b1:	48 8d 4c 24 18       	lea    0x18(%rsp),%rcx //where outer loop ends
   4012b6:	ba 07 00 00 00       	mov    $0x7,%edx
   4012bb:	89 d0                	mov    %edx,%eax
   4012bd:	41 2b 04 24          	sub    (%r12),%eax
   4012c1:	41 89 04 24          	mov    %eax,(%r12)
   4012c5:	49 83 c4 04          	add    $0x4,%r12
   4012c9:	4c 39 e1             	cmp    %r12,%rcx
-  4012cc:	75 ed                	jne    4012bb <phase_7+0x79>
+  4012cc:	75 ed                	jne    4012bb <phase_7+0x79> //loops here
+
   4012ce:	be 00 00 00 00       	mov    $0x0,%esi
   4012d3:	eb 1a                	jmp    4012ef <phase_7+0xad>
-  4012d5:	48 8b 52 08          	mov    0x8(%rdx),%rdx
+
+
+  4012d5:	48 8b 52 08          	mov    0x8(%rdx),%rdx //both loops jump here
   4012d9:	83 c0 01             	add    $0x1,%eax
   4012dc:	39 c8                	cmp    %ecx,%eax
-  4012de:	75 f5                	jne    4012d5 <phase_7+0x93>
+  4012de:	75 f5                	jne    4012d5 <phase_7+0x93> //loops here
+
   4012e0:	48 89 54 74 20       	mov    %rdx,0x20(%rsp,%rsi,2)
   4012e5:	48 83 c6 04          	add    $0x4,%rsi
   4012e9:	48 83 fe 18          	cmp    $0x18,%rsi
-  4012ed:	74 14                	je     401303 <phase_7+0xc1>
+  4012ed:	74 14                	je     401303 <phase_7+0xc1> //our exit
   4012ef:	8b 0c 34             	mov    (%rsp,%rsi,1),%ecx
   4012f2:	b8 01 00 00 00       	mov    $0x1,%eax
   4012f7:	ba 20 41 60 00       	mov    $0x604120,%edx
-  4012fc:	83 f9 01             	cmp    $0x1,%ecx
-  4012ff:	7f d4                	jg     4012d5 <phase_7+0x93>
+  4012fc:	83 f9 01             	cmp    $0x1,%ecx //1 with 4 initial
+  4012ff:	7f d4                	jg     4012d5 <phase_7+0x93> //does this once
+
+
   401301:	eb dd                	jmp    4012e0 <phase_7+0x9e>
   401303:	48 8b 5c 24 20       	mov    0x20(%rsp),%rbx
   401308:	48 8d 44 24 20       	lea    0x20(%rsp),%rax
   40130d:	48 8d 74 24 48       	lea    0x48(%rsp),%rsi
   401312:	48 89 d9             	mov    %rbx,%rcx
+
+
   401315:	48 8b 50 08          	mov    0x8(%rax),%rdx
   401319:	48 89 51 08          	mov    %rdx,0x8(%rcx)
   40131d:	48 83 c0 08          	add    $0x8,%rax
   401321:	48 89 d1             	mov    %rdx,%rcx
   401324:	48 39 c6             	cmp    %rax,%rsi
-  401327:	75 ec                	jne    401315 <phase_7+0xd3>
+  401327:	75 ec                	jne    401315 <phase_7+0xd3> //last loop
+
+
   401329:	48 c7 42 08 00 00 00 	movq   $0x0,0x8(%rdx)
   401330:	00 
   401331:	bd 05 00 00 00       	mov    $0x5,%ebp
